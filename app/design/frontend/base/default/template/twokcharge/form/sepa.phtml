@@ -783,31 +783,32 @@ Validation.add('<?php echo $type; ?>-validate-sepa-signature', '<?php echo __('S
             <input type="text" style="float:left" class="required-entry validate-alphanum <?php echo $type; ?>-validate-sepa-bic" maxlength="11" size="15" name="payment[<?php echo $type; ?>_sepa_bic]" />
         </span>
     </li>
-
+<!--
     <li>
-        <label for="<?php echo $type; ?>-sepa-signature" class="required">
-            <em>*</em><?php echo $this->__('Signature') ?></label>
+        <label for="<?php //echo $type; ?>-sepa-signature" class="required">
+            <em>*</em><?php //echo $this->__('Signature') ?></label>
         <span class="input-box" style="width:360px;">
-            <a class="<?php echo $type; ?>-sepa-make-tool <?php echo $type; ?>-sepa-signature-make-tool" title="<?php echo $this->__('How the signature box works') ?>" href="#">
-                <img src="<?php echo $this->getSkinUrl('twokcharge/images/qm.gif') ?>" alt="<?php echo $this->__('How the signature box works') ?>" title="<?php echo $this->__('How the signature box works') ?>" />
+            <a class="<?php //echo $type; ?>-sepa-make-tool <?php //echo $type; ?>-sepa-signature-make-tool" title="<?php //echo $this->__('How the signature box works') ?>" href="#">
+                <img src="<?php //echo $this->getSkinUrl('twokcharge/images/qm.gif') ?>" alt="<?php //echo $this->__('How the signature box works') ?>" title="<?php //echo $this->__('How the signature box works') ?>" />
             </a>
             <iframe id="signaturebox" frameborder=0 style="margin:0px;width:325px;height:145px;float:left" 
-            src="https://secure.2000charge.com/secure/signature/capturesignature.asp?clientaccount=<?php echo $clientaccount ?>&key=<?php echo $keyaccount ?>">
+            src="https://secure.2000charge.com/secure/signature/capturesignature.asp?clientaccount=<?php //echo $clientaccount ?>&key=<?php //echo $keyaccount ?>">
             </iframe>
         </span>
     </li>
     <li>
-        <label for="<?php echo $type; ?>-sepa-signature-number" class="required">
-            <em>*</em><?php echo $this->__('Signature number') ?></label>
+        <label for="<?php //echo $type; ?>-sepa-signature-number" class="required">
+            <em>*</em><?php //echo $this->__('Signature number') ?></label>
         <span class="input-box">
-        <!--    <input type="text" class="required-entry" maxlength="11" size="11" name="payment[sepa_bic]" /> -->
-            <a class="<?php echo $type; ?>-sepa-make-tool <?php echo $type; ?>-sepa-signature-number-make-tool" title="<?php echo $this->__('How you make Signature Number') ?>" href="#">
-                 <img src="<?php echo $this->getSkinUrl('twokcharge/images/qm.gif') ?>" alt="<?php echo $this->__('How you make Signature Number') ?>" title="<?php echo $this->__('How you make Signature Number') ?>" />
+        --><!--    <input type="text" class="required-entry" maxlength="11" size="11" name="payment[sepa_bic]" /> --><!-- 
+            <a class="<?php //echo $type; ?>-sepa-make-tool <?php //echo $type; ?>-sepa-signature-number-make-tool" title="<?php //echo $this->__('How you make Signature Number') ?>" href="#">
+                 <img src="<?php //echo $this->getSkinUrl('twokcharge/images/qm.gif') ?>" alt="<?php //echo $this->__('How you make Signature Number') ?>" title="<?php //echo $this->__('How you make Signature Number') ?>" />
             </a>
-            <input type="text" style="float:left" class="required-entry validate-digits <?php echo $type; ?>-validate-sepa-signature" maxLength="8" size="8" name="payment[<?php echo $type; ?>_sepa_signum]">
+            <input type="text" style="float:left" class="required-entry validate-digits <?php //echo $type; ?>-validate-sepa-signature" maxLength="8" size="8" name="payment[<?php //echo $type; ?>_sepa_signum]">
 
         </span>
     </li>
+    -->
 </ul> 
 
 

@@ -26,8 +26,6 @@
  */
 
  
-echo 'Running Upgrade script (mysql4-upgrade-0.1.0-0.1.4.php) for TwoKChargeInc_TwoKCharge<br />'; 
-
 $installer = $this;
 
 $installer->startSetup();

@@ -113,7 +113,7 @@ class TwoKChargeInc_TwoKCharge_Model_Standard extends Mage_Payment_Model_Method_
              return $errorMsg;
       }
  
-         $order->setSepaSignum($data->getTwokchargeSepaSignum());
+  //       $order->setSepaSignum($data->getTwokchargeSepaSignum());
          $order->setSepaIban($data->getTwokchargeSepaIban());
          $order->setSepaBic($data->getTwokchargeSepaBic()); 
      
@@ -290,9 +290,6 @@ class TwoKChargeInc_TwoKCharge_Model_Standard extends Mage_Payment_Model_Method_
 
 // ----  direct pay gateway method - START !!!!!! -------
         if (in_array($order->getTwokchargeTypeName(), array("SEPA", "EuroDebit", "ACH", "CreditCard", "BARPAY"))) {
-                
-   //         Mage::log(var_export($order->debug(), TRUE), null,'$cart3.log'); 
-        
 
             $check = $this -> _getOrderDirectPay($order);
             if ($check == 'N' || $check == 'X') {
@@ -535,7 +532,7 @@ class TwoKChargeInc_TwoKCharge_Model_Standard extends Mage_Payment_Model_Method_
                      
                             "pricepoint" => $cart->getPricePoint(),
                             "paymenttype" => $cart->getTwokchargeTypeName(),
-                            "signum" => $cart->getSepaSignum(),
+//                            "signum" => $cart->getSepaSignum(),
                             "iban" => $cart->getSepaIban(),
                             "bic" => $cart->getSepaBic(),
                             );

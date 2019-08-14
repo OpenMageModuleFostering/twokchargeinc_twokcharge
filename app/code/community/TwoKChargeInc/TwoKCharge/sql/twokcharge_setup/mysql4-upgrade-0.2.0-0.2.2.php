@@ -25,7 +25,6 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-echo 'Running Upgrade script (mysql4-upgrade-0.2.0-0.2.2.php) for TwoKChargeInc_TwoKCharge<br />'; 
 
 $installer = $this;
 

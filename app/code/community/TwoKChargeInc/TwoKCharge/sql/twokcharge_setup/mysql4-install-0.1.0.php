@@ -25,8 +25,6 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
  
-echo 'Running Insall script (mysql4-install-0.1.0.php) for module TwoKChargeInc_TwoKCharge <br />'; 
-
 $installer = $this;
 
 $installer->startSetup();
@@ -41,7 +39,7 @@ $select = $conn
 $data1 = $conn->fetchAll($select);
 
 if ($data1) {
-    echo 'In database jet - sales/order_status';
+ //   echo 'In database jet - sales/order_status';
 } else {
    //echo 'Insert in db - sales/order_status';
 
@@ -61,7 +59,7 @@ $select = $conn
 $data2 = $conn->fetchAll($select);
 
 if ($data2) {
-    echo 'In database jet - sales/order_status_state';
+ //   echo 'In database jet - sales/order_status_state';
 } else {
    //echo 'Insert in db - sales/order_status_state';
 

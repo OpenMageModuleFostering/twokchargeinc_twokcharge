@@ -119,14 +119,14 @@
                 <show_in_website>1</show_in_website>
                 <show_in_store>0</show_in_store>
             </pp_ach>
-            <pp_barpay translate="label">
+         <!--   <pp_barpay translate="label">
                 <label>Price Point for "BARPAY"</label>
                 <frontend_type>text</frontend_type>
                 <sort_order>32</sort_order>
                 <show_in_default>1</show_in_default>
                 <show_in_website>1</show_in_website>
                 <show_in_store>0</show_in_store>
-            </pp_barpay>
+            </pp_barpay> -->
             <pp_directpay translate="label">
                 <label>Price Point for "Directpay"</label>
                 <frontend_type>text</frontend_type>
