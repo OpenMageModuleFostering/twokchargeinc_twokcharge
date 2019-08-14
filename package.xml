@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<package>
+    <name>TwoKChargeInc_TwoKCharge</name>
+    <version>1.0.1</version>
+    <stability>stable</stability>
+    <license uri="http://www.opensource.org/licenses/OSL-3.0">OSL v3.0</license>
+    <channel>community</channel>
+    <extends/>
+    <summary>More options means more sales.  Achieve more by adding alternative payment methods to your website.</summary>
+    <description>2000Charge offers merchants a variety of payment methods that will limit the exposure and risks involved in providing services online to consumers worldwide.&#xD;
+Adding 2000Charge extension will increase your sales because you can offer consumers more options to pay:&#xD;
+ACH - Online Check&#xD;
+BARPAY&#xD;
+EPS&#xD;
+iDEAL&#xD;
+GiroPay&#xD;
+YellowPay&#xD;
+EuroDebit&#xD;
+Pay by Bank&#xD;
+Directpay&#xD;
+Paysafecard&#xD;
+POLi&#xD;
+Przelewy24&#xD;
+Teleingreso&#xD;
+EuroDebit SEPA&#xD;
+QIWI&#xD;
+TelePay</description>
+    <notes>This module adds the wide range of different 2000Charge methods.</notes>
+    <authors><author><name>2000Charge Inc</name><user>twokcharge</user><email>magento@2000charge.com</email></author></authors>
+    <date>2013-02-08</date>
+    <time>10:37:12</time>
+    <contents><target name="magecommunity"><dir name="TwoKChargeInc"><dir name="TwoKCharge"><dir name="Block"><file name="Form.php" hash="9fab9e6058c7c6f99c57df8ae4c622a7"/><file name="PaymentInfo.php" hash="4458e81a08f2a9e2dfae96dff41d7830"/><file name="Postback.php" hash="c4165df000bfccdba30a333f96543a6b"/><file name="Redirect.php" hash="baab3cee4a93f3280d7871abdca12df8"/></dir><dir name="Helper"><file name="Data.php" hash="09db6528a35017bec022f4871ae8b45d"/></dir><dir name="Model"><file name="Dbiban.php" hash="e2941c0a7a64082927ee50415cf121a6"/><file name="Dbsource.php" hash="9afb0805eea1b1b02950c0fc49733b8a"/><dir name="Mysql4"><dir name="Dbiban"><file name="Collection.php" hash="5584af68e309d6c5161b8374cbc66bd2"/></dir><file name="Dbiban.php" hash="425336a3109f471b20b927b45947c8c3"/><dir name="Dbsource"><file name="Collection.php" hash="d8f830429707821ce03d235030c0dc19"/></dir><file name="Dbsource.php" hash="4abc74c06176e0dcb657286b5a50f10a"/></dir><dir name="Resource"><file name="Setup.php" hash="9911bf718e8ce796aba85bb739d17657"/></dir><file name="Session.php" hash="5508051f291806efa1e03ac49d34cca6"/><file name="Standard.php" hash="d8269d2fce8da1d4db9885cf0b7c3208"/><dir name="System"><dir name="Config"><dir name="Source"><file name="Allowtypeall.php" hash="9421a1e0d5c635a95b96650b88c2fa05"/><dir name="Payment"><file name="Twokchargetype.php" hash="045a3b5152d8b0f72afa753501b5fba8"/></dir><file name="Testmode.php" hash="287f1b5d149212a7c38977fedace7db0"/></dir></dir></dir></dir><dir name="controllers"><file name="IndexController.php" hash="09efa5269cde213f8ec6a54fd6476823"/><file name="PaymentController.php" hash="912ae7614275deb636839d5144bdbdaa"/></dir><dir name="etc"><file name="config.xml" hash="7e89d80213fd5c3ef76a4235a5bc5da8"/><file name="system.xml" hash="c2dc716214295ede1f0f0cdbc945d2e7"/></dir><dir name="sql"><dir name="twokcharge_setup"><file name="mysql4-install-0.1.0.php" hash="01f10887654d251ba1fa8b76dc323332"/><file name="mysql4-upgrade-0.1.0-0.1.4.php" hash="784c4b9d97eb960a1105903cb5decd08"/><file name="mysql4-upgrade-0.1.4-0.2.0.php" hash="1c4663a7e7cc26f824571cc0051758a5"/><file name="mysql4-upgrade-0.2.0-0.2.2.php" hash="0a5f21f6efb8557b96ff6a83b13bda3b"/><file name="mysql4-upgrade-0.2.2-0.2.3.php" hash="82e1e44150217a7b8a5a7887034f5098"/><file name="mysql4-upgrade-0.2.3-1.0.0.php" hash="df8e39cc5f618e053aff153b507aa72a"/><file name="mysql4-upgrade-1.0.0-1.0.1.php" hash="2d8cb5b7b67e66662db542f040d46140"/></dir></dir></dir></dir></target><target name="mageetc"><dir name="modules"><file name="TwoKChargeInc_TwoKCharge.xml" hash="53f181cd30b94ffb2a8dfb693fab6d0f"/></dir></target><target name="magelocale"><dir name="en_US"><file name="TwoKChargeInc_TwoKCharge.csv" hash="8ddcaf54ac93ec7b5af8b5f9c4df350a"/></dir></target><target name="magedesign"><dir name="frontend"><dir name="base"><dir name="default"><dir name="template"><dir name="twokcharge"><file name="failure.phtml" hash="cd2f794d3259ae701e52b5f3055af4a8"/><dir name="form"><file name="ach.phtml" hash="39d6d344d155ec6a914d32148516cce4"/><file name="barpay.phtml" hash="d9b8bb18d6f28c22b60bf02cce93f3a8"/><file name="brazilpay.phtml" hash="134ba0b19fc3150c199491f962e44ced"/><file name="chinadebit.phtml" hash="aa786274e898e3d64adc8cfe2e78cff8"/><file name="creditcard.phtml" hash="c8610200b519ca61179e989df01e16f8"/><file name="directpay.phtml" hash="328b77c286ee6e27af32caad58f67002"/><file name="directpaymax.phtml" hash="6107631e0eed80e060f0298a7df2a37b"/><file name="eps.phtml" hash="d9b8bb18d6f28c22b60bf02cce93f3a8"/><file name="eurodebit.phtml" hash="164592ef92ffc299a5322be1a6bfbd04"/><file name="giropay.phtml" hash="f243ac95d565c8b33ad9db9ec1942b4d"/><file name="ideal.phtml" hash="3ec9b88080d1930d3e36dd1de919fe25"/><file name="paysafe.phtml" hash="d9b8bb18d6f28c22b60bf02cce93f3a8"/><file name="poli.phtml" hash="d9b8bb18d6f28c22b60bf02cce93f3a8"/><file name="przelewy.phtml" hash="d9b8bb18d6f28c22b60bf02cce93f3a8"/><file name="qiwi.phtml" hash="d9b8bb18d6f28c22b60bf02cce93f3a8"/><file name="sepa.phtml" hash="717dfa85230b6e1d4141819eecc6c952"/><file name="teleingreso.phtml" hash="144506852d8dacc40820f30052d46730"/><file name="telepay.phtml" hash="d9b8bb18d6f28c22b60bf02cce93f3a8"/><file name="yellowpay.phtml" hash="7d90a517b723ff2d3ce1d0b4b216903f"/></dir><file name="form.phtml" hash="6324ec4bbaba9941f8221a464a25a4db"/><file name="isapprove.phtml" hash="a6a49ecc833842f6e73823295c7e52fb"/><file name="postback.phtml" hash="817721301eb611669071b479c2bee13b"/><file name="redirect.phtml" hash="3c176a19395f8be45e00d647142f831a"/><file name="response.phtml" hash="8626c606900c46c0a0d97da6cfe6f3de"/><file name="success.phtml" hash="91c00024f5f9a67d5614e3654c7eaddb"/></dir></dir><dir name="layout"><file name="twokcharge.xml" hash="20ee7f76e52ecdfece78ffca329d5cab"/></dir></dir></dir></dir></target><target name="mageskin"><dir name="frontend"><dir name="base"><dir name="default"><dir name="twokcharge"><dir name="css"><file name="styles.css" hash="35c19911069f5c1ff27f0d62466fc034"/></dir><dir name="images"><file name="cvv22.gif" hash="83cdd38bf110b0f9c52fe84b56f45298"/><file name="information.png" hash="db8ec00f3807b9c6a4f83f860507473c"/><file name="phoneverf1.jpg" hash="e767327aeb2ac74f63dab481102963ab"/><file name="phoneverf2.jpg" hash="8a2b8e54fcc8ed9e9d374798b9a151df"/><file name="phoneverf3.jpg" hash="6e01da6a98e7416993974867e155350a"/><file name="phoneverf4.jpg" hash="c2d41b2e90ff26d1cd5b25c104bd14e5"/><file name="qm.gif" hash="90db9e3e88dbd76eaf7c1f902262ddc6"/></dir></dir></dir></dir></dir></target></contents>
+    <compatible/>
+    <dependencies><required><php><min>5.2.0</min><max>6.0.0</max></php><package><name>Mygento_JQueryLib</name><channel>community</channel><min>1.8.1.0</min><max></max></package></required></dependencies>
+</package>

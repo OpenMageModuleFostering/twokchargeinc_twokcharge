@@ -1,0 +1,153 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     TwoKChargeInc_TwoKCharge
+ * @copyright   Copyright (c) 2012 2000Charge Inc (http://www.2000charge.com)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+?>
+<?php
+
+    $_code = $this->getMethodCode();
+    $_cart = Mage::getModel('checkout/cart')->getQuote();
+  
+    $countryCode = $_cart->getBillingAddress()->getCountry();
+    $checkType = Mage::getStoreConfig('payment/twokcharge/allowtypeall',Mage::app()->getStore());
+    $specificType = Mage::getStoreConfig('payment/twokcharge/allowspecifictype',Mage::app()->getStore());
+    $specificTypeList = explode(",",$specificType);
+
+    $dbSourceList = Mage::getModel('twokcharge/dbsource')->getCollection()->getData();
+    foreach ($dbSourceList as $product=>$key) {
+        foreach ($key as $list=>$value) {
+            if ($list == 'allow_country') {
+                 $value1 = explode("|",$value);
+                 $dbSourceList[$product][$list] = $value1;
+            }
+        }
+    } 
+
+    if ($checkType == 1) {          
+        foreach ($dbSourceList as $product=>$key) {
+            if (in_array($key["type_name"], $specificTypeList)) {  
+                $paymentTypes[$key['type_name']] = $key['allow_country'];
+                $paymentTypesName[$key['type_name']] = $key['type_label'];      
+            }
+        } 
+    } elseif ($checkType == 0) {
+        foreach ($dbSourceList as $product=>$key) {
+            $paymentTypes[$key['type_name']] = $key['allow_country'];
+            $paymentTypesName[$key['type_name']] = $key['type_label'];     
+        }  
+    } 
+
+?>
+
+<script type="text/javascript">
+//<![CDATA[ 
+
+var chosenCountry = '<?php echo $countryCode; ?>';
+
+checkChosenCountryfunc();
+
+function checkChosenCountryfunc() {
+
+        jQuery(".<?php echo $_code ?>-payment-select").hide();
+        jQuery("select#<?php echo $_code ?>-payment-type").empty();
+        jQuery("select#<?php echo $_code ?>-payment-type").append('<option value="" selected="selected"><?php echo $this->__('Select Option') ?></option>');
+ 
+  <?php $js_paymentTypes = json_encode($paymentTypes);
+        echo "var paymentTypes = ". $js_paymentTypes . ";\n"; 
+        $js_paymentTypesName = json_encode($paymentTypesName);
+        echo "var paymentTypesName = ". $js_paymentTypesName . ";\n";  ?>
+  
+         for (var key in paymentTypes) {
+            var allowedCountries = paymentTypes[key];
+            if (jQuery.inArray(chosenCountry, allowedCountries) > -1 ) {
+                jQuery("select#<?php echo $_code ?>-payment-type").append('<option value="' + key + '">' + paymentTypesName[key] + '</option>');
+            }
+        } 
+    }
+         
+   jQuery("#<?php echo $_code ?>-payment-type").change(function () { 
+
+          var str = "";         
+          jQuery("#<?php echo $_code ?>-payment-type option:selected").each(function () {
+                        str += jQuery(this).val() + ""; 
+                jQuery(".<?php echo $_code ?>-payment-select").hide("fast");
+    
+            <?php foreach($paymentTypesName as $object => $key) { ?>
+                    if (str == "<?php echo $object ?>") {
+                        jQuery("#<?php echo $_code ?>-payment-type-<?php echo $object; ?>").show(400, function () {
+// special fields for (ACH) payment
+                           <?php if ($object == "ACH" && $countryCode == "US") { ?> 
+                                  jQuery("#<?php echo $_code ?>-<?php echo strtolower($object); ?>-ssn-field").show(400);
+                           <?php } else { ?>
+                                  jQuery("#<?php echo $_code ?>-<?php echo strtolower($object); ?>-ssn-field").hide();
+                           <?php } 
+// special fields for (EuroDebit) payment
+                                 if ($object == "EuroDebit" || ($countryCode == "DE" || $countryCode == "AT")) { ?> 
+                                  jQuery("#<?php echo $_code ?>-<?php echo strtolower($object); ?>-routingnumber-field").show(400);
+                           <?php } else { ?>
+                                  jQuery("#<?php echo $_code ?>-<?php echo strtolower($object); ?>-routingnumber-field").hide();
+                           <?php } ?>                   
+                        });
+                    }
+            <?php } ?>  
+                         
+            });        
+        }).trigger('change');
+
+//]]> 
+</script>
+
+<ul class="form-list" id="payment_form_<?php echo $_code ?>" style="display:none;"> 
+    <li>
+        <ul>
+            <div class="<?php echo $_code ?>-container">
+                <li> 
+                    <label for="<?php echo $_code ?>-payment-type" class="required"><em>*</em><?php echo $this->__('Payment Method') ?></label>            
+                    <div class="input-box">
+                       <select id="<?php echo $_code ?>-payment-type" name="payment[<?php echo $_code ?>_type_name]" class="required-entry" >   
+                            <option value="" selected="selected"><?php echo $this->__('Select Option') ?></option>
+                         <?php foreach($paymentTypesName as $object => $key) { ?>
+                            <option value="<?php echo $object ?>"><?php echo $key ?></option>
+                         <?php } ?>
+                      </select>
+                    </div>  
+                </li>
+                <div class="<?php echo $_code ?>-payment-select" id="<?php echo $_code ?>-payment-type-notselected" style="display: none;"></div> 
+                <?php foreach($paymentTypesName as $object => $key) { ?>
+                <div class="<?php echo $_code ?>-payment-select" id="<?php echo $_code ?>-payment-type-<?php echo $object ?>" style="display: none;">
+                      <?php echo $this->getLayout()->createBlock('core/template')->setTemplate(''.$_code.'/form/'.strtolower($object).'.phtml')->toHtml(); ?>
+                </div>
+                <?php } ?>
+            </div> 
+        </ul> 
+    </li>
+</ul>
+
+
+
+
+<div>
+    <?php echo $this->getMethod()->getConfigData('message');?>
+</div>
+

@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * @category    Payment Method
+ * @package     TwoKChargeInc_TwoKCharge
+ * @copyright   Copyright (c) 2012 2000Charge Inc (http://www.2000charge.com)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<config>
+  <modules>
+    <TwoKChargeInc_TwoKCharge>
+      <version>1.0.1</version>
+    </TwoKChargeInc_TwoKCharge>
+  </modules>
+
+  <global>
+    <fieldsets>
+         <sales_convert_quote_payment>
+            <twokcharge_type_name>
+                <to_order_payment>*</to_order_payment>
+            </twokcharge_type_name>
+         </sales_convert_quote_payment>
+    </fieldsets>  
+    <models>
+        <twokcharge>
+            <class>TwoKChargeInc_TwoKCharge_Model</class>
+            <resourceModel>twokcharge_mysql4</resourceModel>
+        </twokcharge>
+        <twokcharge_mysql4>
+            <class>TwoKChargeInc_TwoKCharge_Model_Mysql4</class>
+            <entities>
+                <dbsource>
+                    <table>twokcharge_resource</table>
+                </dbsource>
+                <dbiban>
+                    <table>twokcharge_iban</table>
+                </dbiban>
+            </entities>
+        </twokcharge_mysql4>
+    </models>   
+    <resources>
+        <twokcharge_setup>
+            <setup>
+                <module>TwoKChargeInc_TwoKCharge</module>
+                <class>TwoKChargeInc_TwoKCharge_Model_Resource_Setup</class>
+            </setup>
+        </twokcharge_setup>
+         <twokcharge_write>
+            <connection>
+                <use>core_write</use>
+            </connection>
+        </twokcharge_write>
+        <twokcharge_read>
+            <connection>
+                <use>core_read</use>
+            </connection>
+        </twokcharge_read>
+    </resources>
+    <helpers>
+      <twokcharge>
+        <class>TwoKChargeInc_TwoKCharge_Helper</class>
+      </twokcharge>
+    </helpers>
+    <blocks>
+      <twokcharge>
+        <class>TwoKChargeInc_TwoKCharge_Block</class>
+      </twokcharge>
+    </blocks>
+  </global>
+  <default>
+    <payment>
+       <twokcharge>
+          <model>twokcharge/standard</model>
+          <active>1</active>
+          <order_status>pending</order_status>
+          <title>2000Charge</title>
+          <payment_action>sale</payment_action>
+          <allowspecific>0</allowspecific>
+          <sort_order>33</sort_order>
+
+       </twokcharge>
+    </payment>    
+  </default>
+  <frontend>
+        <events>
+        <sales_model_service_quote_submit_before>
+            <observers>
+                <twokcharge>
+                    <type>singleton</type>
+                    <class>TwoKChargeInc_TwoKCharge_Model_Standard</class>
+                    <method>prepare_payment_send</method>
+                </twokcharge>
+            </observers>
+        </sales_model_service_quote_submit_before>
+    </events>   
+    <translate>
+        <modules>
+            <TwoKChargeInc_TwoKCharge>
+                <files>
+                    <default>TwoKChargeInc_TwoKCharge.csv</default>
+                </files>
+            </TwoKChargeInc_TwoKCharge>
+        </modules>
+    </translate>  
+    <routers>
+       <twokcharge>
+          <use>standard</use>
+          <args>
+             <module>TwoKChargeInc_TwoKCharge</module>
+             <frontName>twokcharge</frontName>
+          </args>
+       </twokcharge>
+    </routers>
+    <layout>
+        <updates>
+            <twokcharge> 
+                <file>twokcharge.xml</file>
+            </twokcharge> 
+        </updates>
+    </layout>
+  </frontend>
+  <adminhtml>
+        <translate>
+            <modules>
+                <TwoKChargeInc_TwoKCharge>
+                    <files>
+                        <default>TwoKChargeInc_TwoKCharge.csv</default>
+                    </files>
+                </TwoKChargeInc_TwoKCharge>
+            </modules>
+        </translate>
+    </adminhtml> 
+</config>

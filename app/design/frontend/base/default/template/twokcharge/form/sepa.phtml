@@ -1,0 +1,813 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     TwoKChargeInc_TwoKCharge
+ * @copyright   Copyright (c) 2012 2000Charge Inc (http://www.2000charge.com)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+    $clientaccount = Mage::getStoreConfig('payment/twokcharge/clientaccount',Mage::app()->getStore());
+    $keyaccount = Mage::getStoreConfig('payment/twokcharge/keyaccount',Mage::app()->getStore());
+    
+    $cCode = Mage::getModel('checkout/cart')->getQuote()->getBillingAddress()->getCountry();
+
+    $dbIbanList = Mage::getModel('twokcharge/dbiban')->getCollection()->getData();
+    $count  = count($dbIbanList);
+    
+    $type = 'twokcharge';
+    $pay_options = 'sepa';
+?>
+
+<script type="text/javascript">
+
+//<![CDATA[
+
+    //var test = '<?php // echo $cCode ?>';
+    //    console.log(test);
+    //    console.log("-------start !!-----------");
+
+
+var name = '';
+var code = '';
+var bank = '';
+var acc = '';
+var bank_lng = '';
+var acc_lng = '';
+var total_lng = '';
+    
+    var iban_data = new Array();
+// create array iban_data in db   
+<?php for ($i = 0; $i < $count; ++$i) { ?>
+     
+     iban_data.push(new Country("<?php echo $dbIbanList[$i]['country'] ?>", 
+                          "<?php echo $dbIbanList[$i]['country_id'] ?>", 
+                          "<?php echo $dbIbanList[$i]['bank_code'] ?>", 
+                          "<?php echo $dbIbanList[$i]['account_number'] ?>"
+                          ) 
+              );
+<?php } ?>
+    // check if iban is valid   
+      jQuery('input[name="payment[<?php echo $type; ?>_sepa_iban]"]').change(function () { 
+      
+            var ibanCheckResult = CheckIBAN(jQuery('input[name="payment[<?php echo $type; ?>_sepa_iban]"]').val() );
+            
+          //  console.log(ibanCheckResult);
+            
+                if (ibanCheckResult == "OK") { 
+                     jQuery('input[name="payment[<?php echo $type; ?>_sepa_iban_hidden]"]').val(ibanCheckResult)
+                } else {
+                     jQuery('input[name="payment[<?php echo $type; ?>_sepa_iban_hidden]"]').val(ibanCheckResult)
+                }
+     }); 
+     
+    // show popup window with info - Signature  
+    function toggleSignatureToolTip(event){
+        if($('<?php echo $type; ?>-<?php echo $pay_options; ?>-signature-make-tool-tip')){
+            $('<?php echo $type; ?>-<?php echo $pay_options; ?>-signature-make-tool-tip').setStyle({
+                top: (Event.pointerY(event)-560)+'px'//,
+                //left: (Event.pointerX(event)+100)+'px'
+            })
+            $('<?php echo $type; ?>-<?php echo $pay_options; ?>-signature-make-tool-tip').toggle();
+        }
+        Event.stop(event);
+    }
+    if($('<?php echo $type; ?>-<?php echo $pay_options; ?>-signature-make-tool-tip-close')){
+       Event.observe($('<?php echo $type; ?>-<?php echo $pay_options; ?>-signature-make-tool-tip-close'), 'click', toggleSignatureToolTip);
+   }
+    
+    $$('.<?php echo $type; ?>-sepa-signature-make-tool').each(function(element){
+        Event.observe(element, 'click', toggleSignatureToolTip);
+    }); 
+
+    // show popup window with info - Signature Number      
+   function toggleSignatureNumberToolTip(event){
+        if($('<?php echo $type; ?>-<?php echo $pay_options; ?>-signature-number-make-tool-tip')){
+            $('<?php echo $type; ?>-<?php echo $pay_options; ?>-signature-number-make-tool-tip').setStyle({
+                top: (Event.pointerY(event)-560)+'px'//,
+                //left: (Event.pointerX(event)+100)+'px'
+            })
+            $('<?php echo $type; ?>-<?php echo $pay_options; ?>-signature-number-make-tool-tip').toggle();
+        }
+        Event.stop(event);
+    }
+    if($('<?php echo $type; ?>-<?php echo $pay_options; ?>-signature-number-make-tool-tip-close')){
+       Event.observe($('<?php echo $type; ?>-<?php echo $pay_options; ?>-signature-number-make-tool-tip-close'), 'click', toggleSignatureNumberToolTip);
+   }
+    
+    $$('.<?php echo $type; ?>-sepa-signature-number-make-tool').each(function(element){
+        Event.observe(element, 'click', toggleSignatureNumberToolTip);
+    });
+     
+    // show popup window with info - Bic  
+    function toggleBicToolTip(event){
+        if($('<?php echo $type; ?>-<?php echo $pay_options; ?>-bic-make-tool-tip')){
+            $('<?php echo $type; ?>-<?php echo $pay_options; ?>-bic-make-tool-tip').setStyle({
+                top: (Event.pointerY(event)-560)+'px'//,
+                //left: (Event.pointerX(event)+100)+'px'
+            })
+            $('<?php echo $type; ?>-<?php echo $pay_options; ?>-bic-make-tool-tip').toggle();
+        }
+        Event.stop(event);
+    }
+    if($('<?php echo $type; ?>-<?php echo $pay_options; ?>-bic-make-tool-tip-close')){
+       Event.observe($('<?php echo $type; ?>-<?php echo $pay_options; ?>-bic-make-tool-tip-close'), 'click', toggleBicToolTip);
+   }
+    
+
+   $$('.<?php echo $type; ?>-sepa-bic-make-tool').each(function(element){
+        Event.observe(element, 'click', toggleBicToolTip);
+   });
+ 
+    // show popup window with info - Iban
+    function toggleIbanToolTip(event){
+        if($('<?php echo $type; ?>-<?php echo $pay_options; ?>-iban-make-tool-tip')){
+            $('<?php echo $type; ?>-<?php echo $pay_options; ?>-iban-make-tool-tip').setStyle({
+                top: (Event.pointerY(event)-560)+'px'//,
+                //left: (Event.pointerX(event)+100)+'px'
+            })
+            $('<?php echo $type; ?>-<?php echo $pay_options; ?>-iban-make-tool-tip').toggle();
+        }
+        Event.stop(event);
+    }
+    if($('<?php echo $type; ?>-<?php echo $pay_options; ?>-iban-make-tool-tip-close')){
+        Event.observe($('<?php echo $type; ?>-<?php echo $pay_options; ?>-iban-make-tool-tip-close'), 'click', toggleIbanToolTip);
+    }
+
+
+    $$('.<?php echo $type; ?>-sepa-iban-make-tool').each(function(element){
+        Event.observe(element, 'click', toggleIbanToolTip);
+    }); 
+    
+
+
+    $$('#<?php echo $type; ?>-<?php echo $pay_options; ?>-iban-button').each(function(element){
+   //     console.log('attaching event handler');
+        Event.observe(element, 'click', submitIBAN);
+    });  
+    
+//    $$('.button').each(function(elmt) {
+//        elmt.observe('click', function(ev) {
+//                ev.target.disabled='disabled';
+//        });
+//    });
+
+    function submitIBAN() {
+        
+        console.log('submitIBAN');
+
+            var xccode = '<?php echo $cCode ?>';
+
+            var xbankcode = $('<?php echo $type; ?>-<?php echo $pay_options; ?>-xbankcode').value;
+            var xaccountnumber = $('<?php echo $type; ?>-<?php echo $pay_options; ?>-xaccountnumber').value;
+
+            var ibanResult = false;
+            
+                ibanResult = contructIBAN();
+                ibanCheckResult = CheckIBAN( jQuery('input[name="payment[<?php echo $type; ?>_sepa_iban]"]').val() );
+    //    console.log(ibanResult);
+        if (ibanResult) {
+            jQuery('input[name="payment[<?php echo $type; ?>_sepa_iban_hidden]"]').val('OK')
+            $('<?php echo $type; ?>-<?php echo $pay_options; ?>-iban-make-tool-tip').hide();    
+        } else {
+            jQuery('input[name="payment[<?php echo $type; ?>_sepa_iban_hidden]"]').val('NOT OK')
+         //   console.log('====NOT OK===='); 
+        }
+ 
+    }
+
+Country_showFormat(iban_data);
+
+// JavaScript Object for country specific iban data.
+function Country(name, code, bank_form, acc_form)
+{
+  // Constructor for Country objects.
+  //
+  // Arguments:
+  //   name      - Name of the country
+  //   code      - Country Code from ISO 3166
+  //   bank_form - Format of bank/branch code part (e.g. "0 4a 0 ")
+  //   acc_form  - Format of account number part (e.g. "0  11  2n")
+
+  this.name      = name;
+  this.code      = code;
+  this.bank      = Country_decode_format(bank_form);
+  this.acc       = Country_decode_format(acc_form);
+  this.bank_lng  = Country_calc_length(this.bank);
+  this.acc_lng   = Country_calc_length(this.acc);
+  this.total_lng = 4 + this.bank_lng + this.acc_lng;
+ 
+}
+
+// decode iban format in db and return list of value
+function Country_decode_format(form)
+{
+  var form_list = new Array();
+  var parts = form.split(" ");
+  for (var i = 0; i < parts.length; ++i)
+  {
+    var part = parts[i];
+    if (part != "")
+    {
+      var typ = part.charAt(part.length - 1);
+      if (typ == "a" || typ == "n")
+        part = part.substring(0, part.length - 1);
+      else
+        typ = "c";
+      var lng = parseInt(part);
+      form_list[form_list.length] = new Array(lng, typ);
+    }
+  }
+  
+  return form_list;
+}
+
+function Country_calc_length(form_list)
+{
+  var sum = 0;
+  for (var i = 0; i < form_list.length; ++i)
+    sum += form_list[i][0];
+  return sum;
+}
+
+// parse country format on list and set fields length in iban window
+function Country_showFormat(iban_data) {
+
+    var countryCode = CountryData('<?php echo $cCode; ?>');
+    var charlistbank = Array();
+    var charlistacc = Array();
+    var charflag = Array();
+
+  //  console.log(countryCode);
+
+    if (countryCode != null) {
+         for (var i = 0; i < 3; ++i) {
+             if (countryCode.bank[i][0] != 0) { 
+                charlistbank.push(countryCode.bank[i]);
+                if (jQuery.inArray(countryCode.bank[i][1], charflag) < 0 ) {
+                    charflag.push(countryCode.bank[i][1]); 
+                }
+             } 
+             if (countryCode.acc[i][0] != 0) {
+                charlistacc.push(countryCode.acc[i]);
+                if (jQuery.inArray(countryCode.acc[i][1], charflag) < 0 ) {
+                    charflag.push(countryCode.acc[i][1]); 
+                }
+             }  
+         }  
+     }
+    addIbanInfoDescription(charflag);
+    
+
+    var numcharlistbank = addCodeDescription(charlistbank, '<?php echo $type; ?>-<?php echo $pay_options; ?>-xbankcode');
+    var numcharlistacc = addCodeDescription(charlistacc, '<?php echo $type; ?>-<?php echo $pay_options; ?>-xaccountnumber');
+    var nnn = numcharlistbank + numcharlistacc;
+    jQuery('input[name="payment[<?php echo $type; ?>_sepa_iban]"]').attr('maxlength', numcharlistbank+numcharlistacc+4);
+    jQuery('input[name="payment[<?php echo $type; ?>_sepa_iban]"]').attr('size', numcharlistbank+numcharlistacc+10);
+
+}
+// add info description
+function addIbanInfoDescription(charflag) {
+    
+   jQuery("div#<?php echo $type; ?>-<?php echo $pay_options; ?>-iban-info-description").empty();
+   for (var i = 0; i < charflag.length; ++i) { 
+        if (charflag[i] == 'a') {
+            jQuery("div#<?php echo $type; ?>-<?php echo $pay_options; ?>-iban-info-description").append(' &nbsp;&nbsp;<b>a</b>: <?php echo $this->__('letters A-Z') ?>  ');
+        } else if (charflag[i] == 'n') {
+            jQuery("div#<?php echo $type; ?>-<?php echo $pay_options; ?>-iban-info-description").append(' &nbsp;&nbsp;<b>n</b>: <?php echo $this->__('numbers 0-9') ?>  ');
+        } else if (charflag[i] == 'c') {
+            jQuery("div#<?php echo $type; ?>-<?php echo $pay_options; ?>-iban-info-description").append(' &nbsp;&nbsp;<b>c</b>: <?php echo $this->__('letters A-Z and numbers 0-9') ?>  ');
+        } 
+    }
+}
+
+// add description on filed Bank/Branch and account Number field (ex: (Format: 4a + 6n))
+// charlist: list of characters for print
+// identifier: html id, where jquery insert description
+function addCodeDescription(charlist, identifier) {
+
+   jQuery("div#"+identifier+"-description").empty();
+   var msg = "";
+   var numChar = 0;
+   for (var i = 0; i < charlist.length; ++i) {
+         msg = msg + charlist[i][0] + charlist[i][1];
+         numChar = numChar + charlist[i][0];
+         if (i != (charlist.length-1) ) {
+             msg = msg + ' + '; 
+         }
+    } 
+    jQuery("div#"+identifier+"-description").append(' (<?php echo $this->__('Format') ?>: '+msg+')'); 
+    jQuery("input#"+identifier).attr('size', numChar+4);
+    jQuery("input#"+identifier).attr('maxlength', numChar);
+ 
+ return numChar; 
+}
+
+// Search the country code in the iban_data list.
+function CountryData(code)
+{
+  for (var i = 0; i < iban_data.length; ++i)
+    if (iban_data[i].code == code)
+      return iban_data[i];
+  return null;
+}
+
+// Modulo 97 for huge numbers given as digit strings.
+function mod97(digit_string)
+{
+  var m = 0;
+  for (var i = 0; i < digit_string.length; ++i)
+    m = (m * 10 + parseInt(digit_string.charAt(i))) % 97;
+  return m;
+}
+
+// Convert a capital letter into digits: A -> 10 ... Z -> 35 (ISO 13616).
+function capital2digits(ch)
+{
+  var capitals = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  for (var i = 0; i < capitals.length; ++i)
+    if (ch == capitals.charAt(i))
+      break;
+  return i + 10;
+}
+
+// Fill the string with leading zeros until length is reached.
+function fill0(s, l)
+{
+  while (s.length < l)
+    s = "0" + s;
+  return s;
+}
+
+// Compare two strings respecting german umlauts.
+function strcmp(s1, s2)
+{
+  var chars = "AaÄäBbCcDdEeFfGgHhIiJjKkLlMmNnOoÖöPpQqRrSsßTtUuÜüVvWwXxYyZz";
+  var lng = (s1.length < s2.length) ? s1.length : s2.length;
+  for (var i = 0; i < lng; ++i)
+  {
+    var d = chars.indexOf(s1.charAt(i)) - chars.indexOf(s2.charAt(i));
+    if (d != 0)
+      return d;
+  }
+  return s1.length - s2.length;
+}
+
+// Create an index table of the iban_data list sorted by country names.
+function CountryIndexTable()
+{
+  var tab = new Array();
+  var i, j, t;
+  for (i = 0; i < iban_data.length; ++i)
+    tab[i] = i;
+  for (i = tab.length - 1; i > 0; --i)
+    for (j = 0; j < i; ++j)
+      if (strcmp(iban_data[tab[j]].name, iban_data[tab[j+1]].name) > 0)
+        t = tab[j], tab[j] = tab[j+1], tab[j+1] = t;
+  return tab;
+}
+
+// Calculate 2-digit checksum of an IBAN.
+function ChecksumIBAN(iban)
+{
+  var code     = iban.substring(0, 2);
+  var checksum = iban.substring(2, 4);
+  var bban     = iban.substring(4);
+
+  // Assemble digit string
+  var digits = "";
+  for (var i = 0; i < bban.length; ++i)
+  {
+    var ch = bban.charAt(i).toUpperCase();
+    if ("0" <= ch && ch <= "9")
+      digits += ch;
+    else
+      digits += capital2digits(ch);
+  }
+  for (var i = 0; i < code.length; ++i)
+  {
+    var ch = code.charAt(i);
+    digits += capital2digits(ch);
+  }
+  digits += checksum;
+
+  // Calculate checksum
+  checksum = 98 - mod97(digits);
+  return fill0("" + checksum, 2);
+}
+
+// Fill the account number part of IBAN with leading zeros.
+function FillAccount(country, account)
+{
+  return fill0(account, country.acc_lng);
+}
+
+// Check if syntax of the part of IBAN is invalid.
+function InvalidPart(form_list, iban_part)
+{
+  for (var f = 0; f < form_list.length; ++f)
+  {
+    var lng = form_list[f][0], typ = form_list[f][1];
+    if (lng > iban_part.length)
+      lng = iban_part.length;
+    for (var i = 0; i < lng; ++i)
+    {
+      var ch = iban_part.charAt(i);
+      var a = ("A" <= ch && ch <= "Z");
+      var n = ("0" <= ch && ch <= "9");
+      var c = n || a || ("a" <= ch && ch <= "z");
+      if ((!c && typ == "c") || (!a && typ == "a") || (!n && typ == "n"))
+        return true;
+    }
+    iban_part = iban_part.substring(lng);
+  }
+  return false;
+}
+
+// Check if length of the bank/branch code part of IBAN is invalid.
+function InvalidBankLength(country, bank)
+{
+  return (bank.length != country.bank_lng);
+}
+
+// Check if syntax of the bank/branch code part of IBAN is invalid.
+function InvalidBank(country, bank)
+{
+  return (InvalidBankLength(country, bank) ||
+          InvalidPart(country.bank, bank));
+}
+
+// Check if length of the account number part of IBAN is invalid.
+function InvalidAccountLength(country, account)
+{
+  return (account.length < 1 || account.length > country.acc_lng);
+}
+
+// Check if syntax of the account number part of IBAN is invalid.
+function InvalidAccount(country, account)
+{
+  return (InvalidAccountLength(country, account) ||
+          InvalidPart(country.acc, FillAccount(country, account)));
+}
+
+// Check if length of IBAN is invalid.
+function InvalidIBANlength(country, iban)
+{
+  return (iban.length != country.total_lng);
+}
+
+// Convert iban from intern value to string format (IBAN XXXX XXXX ...).
+function extern(intern)
+{
+  var s = "IBAN";
+  for (var i = 0; i < intern.length; ++i)
+  {
+    if (i % 4 == 0)
+      s += " ";
+    s += intern.charAt(i);
+  }
+  return s;
+}
+
+// Convert iban from string format to intern value.
+function intern(extern)
+{
+  if (extern.substring(0, 4) == "IBAN")
+    extern = extern.substring(4);
+  var s = "";
+  for (var i = 0; i < extern.length; ++i)
+    if (extern.charAt(i) != " ")
+      s += extern.charAt(i);
+  return s;
+}
+
+// Calculate the checksum and assemble the IBAN.
+function CalcIBAN(country, bank, account)
+{
+  var fill_acc = FillAccount(country, account);
+  var checksum = ChecksumIBAN(country.code + "00" + bank + fill_acc);
+  return country.code + checksum + bank + fill_acc;
+}
+
+function CalcAltIBAN(country, bank, account)
+{
+  var fill_acc = FillAccount(country, account);
+  var checksum = ChecksumIBAN(country.code + "00" + bank + fill_acc);
+  checksum = fill0("" + mod97(checksum), 2);
+  return country.code + checksum + bank + fill_acc;
+}
+
+// Check the checksum of an IBAN.
+function IBANokay(iban)
+{
+  return ChecksumIBAN(iban) == "97";
+}
+
+// Check the input, calculate the checksum and assemble the IBAN.
+function CreateIBAN()
+{
+
+  var code = "<?php echo $cCode; ?>";
+  var bank = $('<?php echo $type; ?>-<?php echo $pay_options; ?>-xbankcode').value; // intern(form.bankcode.value);
+  var account = $('<?php echo $type; ?>-<?php echo $pay_options; ?>-xaccountnumber').value; // intern(form.accountnumber.value);
+  var country = CountryData(code);
+
+  var err = null, err_focus = null;
+  if (country == null)
+  {
+     err = "<?php echo __('Unknown Country Code') ?>: " + code;
+    //err_focus = form.country;
+       
+  }
+  else if (InvalidBankLength(country, bank))
+  {
+    err = "<?php echo __('Bank/Branch Code length') ?> " + bank.length +
+          " <?php echo __('is not correct for') ?> " + country.name +
+          " (" + country.bank_lng + ")";
+  //  err_focus = form.bank;
+  }
+  else if (InvalidBank(country, bank))
+  {
+    err = "<?php echo __('Bank/Branch Code') ?> " + bank + " <?php echo __('is not correct for') ?> " + 
+          country.name;
+   // err_focus = form.bank;
+  }
+  else if (InvalidAccountLength(country, account))
+  {
+    err = "<?php echo __('Account Number length') ?> " + account.length +
+          " <?php echo __('is not correct for') ?> " + country.name +
+          " (" + country.acc_lng + ")";
+   // err_focus = form.account;
+  }
+  else if (InvalidAccount(country, account))
+  {
+    err = "<?php echo __('Account Number') ?> " + account + " <?php echo __('is not correct for') ?> " +
+          country.name;
+  //  err_focus = form.account;
+  }
+  if (err)
+  { 
+     alert(err);
+     return "error";
+  }
+  else
+  {         
+    return CalcIBAN(country, bank, account);
+  }
+}
+
+// Check the syntax and the checksum of the IBAN.
+function CheckIBAN(iBanNumber)
+{
+  var iban = intern(iBanNumber);
+
+  var code     = iban.substring(0, 2);
+  var checksum = iban.substring(2, 4);
+  var bban     = iban.substring(4);
+  var country  = CountryData(code);
+
+  var err = null;
+  if (country == null)
+    err = "<?php echo __('Unknown Country Code') ?>: " + code;
+  else if (InvalidIBANlength(country, iban))
+    err = "<?php echo __('IBAN length') ?> " + iban.length + " <?php echo __('is not correct for') ?> " +
+          country.name + " (" + country.total_lng + ")";
+  else
+  {
+    var bank_lng = country.bank_lng;
+    var bank     = bban.substring(0, bank_lng);
+    var account  = bban.substring(bank_lng);
+
+    if (InvalidBank(country, bank))
+      err = "<?php echo __('Bank/Branch Code') ?> " + bank + " <?php echo __('is not correct for') ?> " +
+            country.name;
+    else if (InvalidAccount(country, account))
+      err = "<?php echo __('Account Number') ?> " + account + " <?php echo __('is not correct for') ?> " +
+            country.name;
+    else if (!IBANokay(iban))
+      err = "<?php echo __('Checksum of IBAN incorrect') ?>";
+  }
+
+  if (err)
+  {
+    return err;
+  }
+  else
+  {   
+    return "OK";
+  }
+}
+
+// Translation table and translation function for localized versions
+var trans_tab = new Array();
+
+function _(s)
+{
+  var t = trans_tab[s];
+  if (t)
+    s = t;
+  return s;
+}
+
+function contructIBAN() {
+    var ibanCreateResult = CreateIBAN();
+    if (ibanCreateResult == "error") {
+        return false;
+    }
+    else {
+     //   document.capture.ibancomp.value = ibanCreateResult;      
+        jQuery('input[name="payment[<?php echo $type; ?>_sepa_iban]"]').val(ibanCreateResult);      
+        return true;    
+    }    
+}
+
+Validation.add('<?php echo $type; ?>-validate-sepa-bic', '<?php echo __('BIC/SWIFT must have 8 or 11 characters') ?>', function (v) {
+     return Validation.get('IsEmpty').test(v) ||  /^([a-zA-Z0-9]{8}([a-zA-Z0-9]{3})?)?$/.test(v)
+});
+
+Validation.add('<?php echo $type; ?>-validate-sepa-signature', '<?php echo __('Signature number must have 8 digits') ?>', {
+     minLength : 8
+});
+
+
+//]]>
+</script>
+
+
+<div class="tool-tip" id="<?php echo $type; ?>-<?php echo $pay_options; ?>-signature-make-tool-tip" style="display:none;">
+    <div class="btn-close"><a href="#" id="<?php echo $type; ?>-<?php echo $pay_options; ?>-signature-make-tool-tip-close" title="<?php echo $this->__('Close') ?>"><?php echo $this->__('Close') ?></a></div>
+    <div class="tool-tip-content">
+   <!--  <img src="<?php echo $this->getSkinUrl('images/cvv.gif') ?>" alt="<?php echo $this->__('Card Verification Number Visual Reference') ?>" title="<?php echo $this->__('Card Verification Number Visual Reference') ?>" /> -->
+
+        <strong><?php echo __('How Signature box works') ?></strong>
+        <br><br>
+        <?php echo __('Click and hold down the left mouse button inside') ?><br>
+        <?php echo __('the signature pad box below and script your name.') ?><br><br>
+        <?php echo __('As part of your rights, you are entitled to a refund from') ?><br> 
+        <?php echo __('your bank under the terms and conditions of your') ?><br> 
+        <?php echo __('agreement with your bank. A refund must be claimed') ?><br> 
+        <?php echo __('within 8 weeks starting from the date on which') ?> <br> 
+        <?php echo __('your account was debited. Your rights are explained') ?><br> 
+        <?php echo __('in a statement that you can obtain from your bank.') ?>
+    </div>
+</div>
+
+<div class="tool-tip" id="<?php echo $type; ?>-<?php echo $pay_options; ?>-signature-number-make-tool-tip" style="display:none;">
+    <div class="btn-close"><a href="#" id="<?php echo $type; ?>-<?php echo $pay_options; ?>-signature-number-make-tool-tip-close" title="<?php echo $this->__('Close') ?>"><?php echo $this->__('Close') ?></a></div>
+    <div class="tool-tip-content">
+   <!--  <img src="<?php echo $this->getSkinUrl('images/cvv.gif') ?>" alt="<?php echo $this->__('Card Verification Number Visual Reference') ?>" title="<?php echo $this->__('Card Verification Number Visual Reference') ?>" /> -->
+
+        <strong><?php echo __('Signature number') ?></strong>
+        <br><br>
+        <?php echo __('Please enter signature number shown') ?> <br>
+        <?php echo __('when you confirm the signature above.') ?>
+         
+    </div>
+</div>
+
+<div class="tool-tip" id="<?php echo $type; ?>-<?php echo $pay_options; ?>-iban-make-tool-tip" style="display:none;">
+    <div class="btn-close"><a href="#" id="<?php echo $type; ?>-<?php echo $pay_options; ?>-iban-make-tool-tip-close" title="<?php echo $this->__('Close') ?>"><?php echo $this->__('Close') ?></a></div>
+    <div class="tool-tip-content">
+        <strong><?php echo __('IBAN - International Bank Account Number') ?></strong>
+        <br>
+        <br>
+        <?php echo __('Please enter the following information to compose your IBAN') ?>
+        <br>
+        <br>  
+        <table>
+            <tbody>
+                <tr>
+                    <td align="left"><?php echo $this->__('Bank/Branch Code') ?>:</td>
+                    <td align="left"><input maxlength="10" size="18" name="<?php echo $type; ?>-<?php echo $pay_options; ?>-xbankcode" id="<?php echo $type; ?>-<?php echo $pay_options; ?>-xbankcode">
+                        <div id="<?php echo $type; ?>-<?php echo $pay_options; ?>-xbankcode-description" style="display: inline;">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left"><?php echo $this->__('Account Number') ?>:</td>
+                    <td align="left"><input maxlength="8" size="18" name="<?php echo $type; ?>-<?php echo $pay_options; ?>-xaccountnumber" id="<?php echo $type; ?>-<?php echo $pay_options; ?>-xaccountnumber">
+                        <div id="<?php echo $type; ?>-<?php echo $pay_options; ?>-xaccountnumber-description" style="display: inline;">
+                        </div>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td colspan="2"><br></td>
+                </tr>
+                <tr>
+                    <td align="left" colspan="2">
+                        <img src="<?php echo $this->getSkinUrl('twokcharge/images/information.png') ?>" alt="<?php echo $this->__('Information') ?>" title="<?php echo $this->__('Information') ?>" />
+                        <div id="<?php echo $type; ?>-<?php echo $pay_options; ?>-iban-info-description" style="display: inline;">
+ 
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><br>
+                </td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <center><button type="button" id="<?php echo $type; ?>-<?php echo $pay_options; ?>-iban-button">
+                                <span>
+                                    <span>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->__('Submit') ?>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                </span>
+                            </button>
+
+                        </center>                        
+                        
+                        </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="tool-tip" id="<?php echo $type; ?>-<?php echo $pay_options; ?>-bic-make-tool-tip" style="display:none;">
+    <div class="btn-close"><a href="#" id="<?php echo $type; ?>-<?php echo $pay_options; ?>-bic-make-tool-tip-close" title="<?php echo $this->__('Close') ?>"><?php echo $this->__('Close') ?></a></div>
+    <div class="tool-tip-content">
+        <strong><?php echo $this->__('BIC/SWIFT Code - Business Identifier Codes') ?></strong>
+            <br><br>        
+                <center>
+                    <table>
+                        <tbody>
+                            <tr>                    
+                                <td align="left" width="280px">
+                                    <?php echo $this->__('SWIFT codes are most commonly used for international wire transfers and are') ?>
+                                    <?php echo $this->__('comprised of 8 or 11  alphanumeric characters.') ?>
+                                    <?php echo $this->__('Please contact your bank if you do not know your BIC/SWIFT code.') ?>                                          
+                                </td>
+                            </tr>                                
+                        </tbody>
+                    </table>
+                </center>
+    </div>
+</div>
+
+ <ul class="form-list">  
+    <li>
+        <label for="<?php echo $type; ?>-sepa-iban" class="required">
+            <em>*</em><?php echo $this->__('IBAN') ?></label>
+        <span class="input-box" style="width:310px;">    
+            <a class="<?php echo $type; ?>-sepa-make-tool <?php echo $type; ?>-sepa-iban-make-tool" title="<?php echo $this->__('What is IBAN code') ?>" href="#">
+                <img src="<?php echo $this->getSkinUrl('twokcharge/images/qm.gif') ?>" alt="<?php echo $this->__('What is IBAN code') ?>" title="<?php echo $this->__('What is IBAN code') ?>" />
+            </a>
+            <input type="text" style="float:left" class="required-entry validate-alphanum" maxlength="3" size="3" name="payment[<?php echo $type; ?>_sepa_iban]" />      
+            <input type="hidden" style="float:left" name="payment[<?php echo $type; ?>_sepa_iban_hidden]" />      
+        </span>
+    </li>
+    <li>
+        <label for="<?php echo $type; ?>-sepa-bic" class="required">
+            <em>*</em><?php echo $this->__('BIC/SWIFT') ?></label>
+        <span class="input-box">
+            <a class="<?php echo $type; ?>-sepa-make-tool <?php echo $type; ?>-sepa-bic-make-tool" title="<?php echo $this->__('What is BIC/SWIFT code') ?>" href="#">
+                 <img src="<?php echo $this->getSkinUrl('twokcharge/images/qm.gif') ?>" alt="<?php echo $this->__('What is BIC/SWIFT code') ?>" title="<?php echo $this->__('What is BIC/SWIFT code') ?>" />
+            </a>
+            <input type="text" style="float:left" class="required-entry validate-alphanum <?php echo $type; ?>-validate-sepa-bic" maxlength="11" size="15" name="payment[<?php echo $type; ?>_sepa_bic]" />
+        </span>
+    </li>
+
+    <li>
+        <label for="<?php echo $type; ?>-sepa-signature" class="required">
+            <em>*</em><?php echo $this->__('Signature') ?></label>
+        <span class="input-box" style="width:360px;">
+            <a class="<?php echo $type; ?>-sepa-make-tool <?php echo $type; ?>-sepa-signature-make-tool" title="<?php echo $this->__('How the signature box works') ?>" href="#">
+                <img src="<?php echo $this->getSkinUrl('twokcharge/images/qm.gif') ?>" alt="<?php echo $this->__('How the signature box works') ?>" title="<?php echo $this->__('How the signature box works') ?>" />
+            </a>
+            <iframe id="signaturebox" frameborder=0 style="margin:0px;width:325px;height:145px;float:left" 
+            src="https://secure.2000charge.com/secure/signature/capturesignature.asp?clientaccount=<?php echo $clientaccount ?>&key=<?php echo $keyaccount ?>">
+            </iframe>
+        </span>
+    </li>
+    <li>
+        <label for="<?php echo $type; ?>-sepa-signature-number" class="required">
+            <em>*</em><?php echo $this->__('Signature number') ?></label>
+        <span class="input-box">
+        <!--    <input type="text" class="required-entry" maxlength="11" size="11" name="payment[sepa_bic]" /> -->
+            <a class="<?php echo $type; ?>-sepa-make-tool <?php echo $type; ?>-sepa-signature-number-make-tool" title="<?php echo $this->__('How you make Signature Number') ?>" href="#">
+                 <img src="<?php echo $this->getSkinUrl('twokcharge/images/qm.gif') ?>" alt="<?php echo $this->__('How you make Signature Number') ?>" title="<?php echo $this->__('How you make Signature Number') ?>" />
+            </a>
+            <input type="text" style="float:left" class="required-entry validate-digits <?php echo $type; ?>-validate-sepa-signature" maxLength="8" size="8" name="payment[<?php echo $type; ?>_sepa_signum]">
+
+        </span>
+    </li>
+</ul> 
+
+

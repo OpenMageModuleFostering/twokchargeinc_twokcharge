@@ -1,0 +1,75 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     TwoKChargeInc_TwoKCharge
+ * @copyright   Copyright (c) 2012 2000Charge Inc (http://www.2000charge.com)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+    $type = 'twokcharge';
+    $pay_options = 'directpaymax';
+  
+
+    $countryBankList = array( "DE" => array( "312" => "Augusta Bank",
+                                             "268" => "Deutsche Bank",
+                                             "299" => "Postbank",
+                                             "262" => "Raiffeisen-Volksbank",
+                                             ),
+                              "US" => array( "1" => "Bank of America",
+                                             "6" => "Chase",
+                                             "2" => "CitiBank",
+                                             "320" => "Comerica Bank",
+                                             "321" => "U.S. Bank",
+                                             "9" => "Union Bank",
+                                             "3" => "Wells Fargo",
+                                             ),
+                              );
+
+    $_cart = Mage::getModel('checkout/cart')->getQuote();
+    $countryCode = $_cart->getBillingAddress()->getCountry();
+
+  ?>
+
+<ul class="form-list"> 
+    <li style="color:red">
+        <div > <?php echo $this->__('Please have your online bank user id and password ready') ?> </div>
+    </li> 
+    <li>  
+        <label for="<?php echo $type; ?>-<?php echo $pay_options; ?>-bankcode" class="required"><em>*</em><?php echo $this->__('Select Bank') ?></label>
+        <div class="input-box">
+            <select id="<?php echo $type; ?>-<?php echo $pay_options; ?>-select" name="payment[<?php echo $type; ?>_<?php echo $pay_options; ?>_bankcode]" class="required-entry">
+                <option value="" selected="selected"><?php echo $this->__('Select Option') ?></option>       
+          <?php foreach ($countryBankList as $countryObject => $countrykey) {
+                    if ($countryObject == $countryCode ) {  
+                        foreach ($countrykey as $bankobject => $bankkey) { ?>
+                            <option value="<?php echo $bankobject ?>"><?php echo $bankkey ?></option>
+                  <?php }    
+                    }
+                } ?>
+            </select>
+        </div>
+    </li>
+</ul>
+ 
+
+ <?php echo $this->__('Proceed to SUBMIT ORDER for payment instructions') ?>
+
+
