@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/TwoKChargeInc_TwoKCharge",
+    "name": "OpenMageModuleFostering\/TwoKChargeInc_TwoKCharge",
     "type": "magento-module",
     "license": "OSL-v3.0",
     "homepage": "",
     "description": "More options means more sales.  Achieve more by adding alternative payment methods to your website.",
     "authors": [
-    {
-        "name": "2000Charge Inc",
-        "email": "magento@2000charge.com"
-    }
-],
+        {
+            "name": "2000Charge Inc",
+            "email": "magento@2000charge.com"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
